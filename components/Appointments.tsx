@@ -1,74 +1,102 @@
+
 import React, { useState } from 'react';
 import { Appointment } from '../types';
 
 const INITIAL_APPOINTMENTS: Appointment[] = [
-  { id: '1', title: 'Routine ANC Checkup', date: '2024-06-12', time: '09:00 AM', location: 'MTRH Eldoret', smsReminder: true }
+  {
+    id: '1',
+    title: 'ANC Routine Checkup',
+    date: '2024-05-15',
+    time: '09:00 AM',
+    location: 'MTRH Eldoret - ANC Wing',
+    smsReminder: true
+  }
 ];
 
 const Appointments: React.FC = () => {
   const [apps, setApps] = useState<Appointment[]>(INITIAL_APPOINTMENTS);
   const [showAdd, setShowAdd] = useState(false);
-  const [newTitle, setNewTitle] = useState('');
-  const [newDate, setNewDate] = useState('');
-
-  const addAppointment = () => {
-    if (!newTitle || !newDate) return;
-    setApps([...apps, { id: Date.now().toString(), title: newTitle, date: newDate, time: '10:00 AM', location: 'Local Center', smsReminder: true }]);
-    setNewTitle(''); setNewDate(''); setShowAdd(false);
-  };
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500">
+    <div className="space-y-6">
       <header className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-black text-gray-800 tracking-tight">Clinic Visits</h2>
-          <p className="text-sm text-gray-500 font-medium">Track your prenatal appointments</p>
+          <h2 className="text-xl font-bold text-gray-800">Clinic Visits</h2>
+          <p className="text-sm text-gray-500">Track your prenatal appointments</p>
         </div>
-        <button onClick={() => setShowAdd(!showAdd)} className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg transition-all ${showAdd ? 'bg-gray-100' : 'bg-rose-600 text-white shadow-rose-200 active:scale-95'}`}>
-          <i className={`fa-solid ${showAdd ? 'fa-xmark' : 'fa-plus'} text-xl`}></i>
+        <button 
+          onClick={() => setShowAdd(!showAdd)}
+          className="bg-rose-100 text-rose-600 w-10 h-10 rounded-full flex items-center justify-center shadow-sm"
+        >
+          <i className={`fa-solid ${showAdd ? 'fa-xmark' : 'fa-plus'}`}></i>
         </button>
       </header>
 
       {showAdd && (
-        <div className="bg-white p-8 rounded-[2rem] border-2 border-rose-100 shadow-2xl animate-in zoom-in duration-300">
-          <h4 className="font-black mb-6">Schedule New Visit</h4>
-          <div className="space-y-5">
-            <input type="text" placeholder="Reason (e.g. Ultrasound)" className="w-full p-4 bg-gray-50 rounded-2xl outline-none border-2 border-transparent focus:border-rose-400 font-bold" value={newTitle} onChange={(e) => setNewTitle(e.target.value)} />
-            <input type="date" className="w-full p-4 bg-gray-50 rounded-2xl outline-none border-2 border-transparent focus:border-rose-400 font-bold" value={newDate} onChange={(e) => setNewDate(e.target.value)} />
-            <button onClick={addAppointment} className="w-full bg-rose-600 text-white font-black py-4 rounded-2xl shadow-xl active:scale-95">Add Visit</button>
+        <div className="bg-white p-6 rounded-3xl border border-rose-200 shadow-lg animate-in fade-in slide-in-from-top-4">
+          <h4 className="font-bold mb-4">Add New Visit</h4>
+          <div className="space-y-4">
+            <input type="text" placeholder="Title (e.g. Ultrasound)" className="w-full p-3 bg-gray-50 rounded-xl outline-none border border-gray-100 focus:border-rose-400" />
+            <div className="grid grid-cols-2 gap-2">
+              <input type="date" className="p-3 bg-gray-50 rounded-xl outline-none border border-gray-100" />
+              <input type="time" className="p-3 bg-gray-50 rounded-xl outline-none border border-gray-100" />
+            </div>
+            <button className="w-full bg-rose-600 text-white font-bold py-3 rounded-xl">Save Appointment</button>
           </div>
         </div>
       )}
 
-      <div className="space-y-5">
-        {apps.length > 0 ? apps.map(app => (
-          <div key={app.id} className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm relative overflow-hidden group">
-            <div className="absolute top-0 left-0 w-2 h-full bg-rose-600"></div>
-            <div className="flex justify-between items-start">
-              <div className="flex-1">
-                <h4 className="font-black text-gray-800 text-lg leading-tight mb-2">{app.title}</h4>
-                <div className="flex flex-wrap gap-4 text-xs font-bold text-gray-400">
-                  <span className="flex items-center gap-2"><i className="fa-regular fa-calendar-check text-rose-500"></i> {app.date}</span>
-                  <span className="flex items-center gap-2"><i className="fa-solid fa-location-dot text-rose-500"></i> {app.location}</span>
+      <div className="space-y-4">
+        {apps.length > 0 ? (
+          apps.map(app => (
+            <div key={app.id} className="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm relative overflow-hidden group">
+              <div className="absolute top-0 left-0 w-1 h-full bg-indigo-500"></div>
+              <div className="flex justify-between items-start">
+                <div>
+                  <h4 className="font-bold text-gray-800">{app.title}</h4>
+                  <div className="flex items-center gap-2 text-xs text-gray-500 mt-1">
+                    <i className="fa-regular fa-clock"></i>
+                    <span>{app.time} on {app.date}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-gray-500 mt-1">
+                    <i className="fa-solid fa-location-dot"></i>
+                    <span>{app.location}</span>
+                  </div>
+                </div>
+                <div className="text-right">
+                  {app.smsReminder && (
+                    <div className="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[9px] font-bold uppercase flex items-center gap-1">
+                      <i className="fa-solid fa-check"></i> SMS On
+                    </div>
+                  )}
                 </div>
               </div>
-              {app.smsReminder && <div className="bg-green-50 text-green-600 px-3 py-1.5 rounded-xl text-[10px] font-black border border-green-100 flex items-center gap-2"><i className="fa-solid fa-comment-sms"></i> SMS</div>}
+              <div className="mt-4 flex gap-2">
+                <button className="flex-1 bg-gray-50 text-gray-600 py-2 rounded-xl text-xs font-bold active:bg-gray-100">Reschedule</button>
+                <button className="flex-1 bg-gray-50 text-red-400 py-2 rounded-xl text-xs font-bold active:bg-red-50">Cancel</button>
+              </div>
             </div>
-          </div>
-        )) : (
-          <div className="text-center py-20 bg-gray-50 rounded-[2rem] border-2 border-dashed border-gray-200">
-            <p className="font-bold text-gray-400">No appointments scheduled.</p>
+          ))
+        ) : (
+          <div className="text-center py-12 text-gray-400">
+            <i className="fa-regular fa-calendar-xmark text-4xl mb-4 opacity-20"></i>
+            <p>No upcoming visits scheduled.</p>
           </div>
         )}
       </div>
 
-      <div className="p-8 bg-gradient-to-br from-indigo-600 to-indigo-800 rounded-[2.5rem] text-white shadow-2xl relative overflow-hidden group">
-        <h4 className="font-black text-xl mb-3 flex items-center gap-3"><i className="fa-solid fa-tower-cell"></i> Community</h4>
-        <p className="text-xs text-indigo-100 font-medium leading-relaxed mb-6">MamaCare supports everyone via SMS for clinic reminders and daily health tips.</p>
-        <div className="grid grid-cols-2 gap-3 text-xs font-black uppercase tracking-widest">
-          <button className="bg-white/10 p-4 rounded-2xl border border-white/20">Find CHV</button>
-          <button className="bg-white/10 p-4 rounded-2xl border border-white/20">SMS Settings</button>
-        </div>
+      {/* Offline Support Message */}
+      <div className="p-6 bg-indigo-600 rounded-3xl text-white shadow-lg">
+        <h4 className="font-bold mb-2 flex items-center gap-2">
+          <i className="fa-solid fa-tower-broadcast"></i>
+          Offline Support
+        </h4>
+        <p className="text-xs text-indigo-100 leading-relaxed mb-4">
+          For users without smartphones or stable internet, we send automated clinic reminders and daily nutrition tips via SMS to your registered number.
+        </p>
+        <button className="w-full bg-white/20 hover:bg-white/30 text-white font-bold py-2 rounded-xl text-xs transition-colors border border-white/30">
+          Request SMS Support Only
+        </button>
       </div>
     </div>
   );

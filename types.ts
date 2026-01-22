@@ -1,3 +1,4 @@
+
 export type Trimester = 1 | 2 | 3;
 
 export interface UserProfile {
